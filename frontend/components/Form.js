@@ -5,25 +5,30 @@ export default class Form extends React.Component {
     input: ""
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.handleAdd(this.state.input);
-  }
-
+ 
   changeHandler = (e) => {
+    e.preventDefault();
     this.setState({
       ...this.state,
       input: e.target.value
     })
   }
-  render() {
-    return (
-      <form>
-        <input 
 
+
+  postNewTodo = (e) => {
+    e.preventDefault();
+    this.props.postNewTodo(this.state.input)
+  }
+
+  
+  render() {
+    
+    return (
+      <form onSubmit={this.postNewTodo}>
+        <input 
           onChange={this.changeHandler}
         />
-        <button onClick={this.handleSubmit}>Add</button> 
+        <button >Add</button> 
       </form>
     )
   }

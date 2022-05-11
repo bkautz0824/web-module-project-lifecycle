@@ -12,13 +12,14 @@ export default class App extends React.Component {
   state = {
     todos: [],
     error: '',
+    todoNameInput: ''
    }
 
 
    fetchTodos = () => {
     axios.get(URL)
     .then(res => {
-      console.log(res.data.data)
+      
       this.setState({
         ...this.state,
         todos: res.data.data
@@ -37,25 +38,6 @@ export default class App extends React.Component {
   }
 
 
-   addTodos = (task) => {
-    const addedTodo = {
-      task: task,
-      id: Date.now(),
-      completed: false
-    }
-    axios.post(URL, addedTodo)
-      .then(res => {
-        this.setState({...this.state, todos: [...this.state, ]})
-      })
-        .catch(error => {
-          this.setState({
-            ...this.state, error: error.res.data.message
-            })
-          }
-        )
-   }
-
-
   //  handleAdd = (task) => {
   //   const newTodo = {
   //     task: task,
@@ -69,7 +51,31 @@ export default class App extends React.Component {
   //  }
 
 
+   postNewTodo = () => {
+     axios.post(URL, {name: this.state.todoNameInput})
+     .then(res => {
+        this.fetchAllTodos()
+        this.setState({
+          ... this.state, name: ''
+        })
+     })
+     .catch(err => {
+      this.setState({
+        ...this.state, error: err.response.data.message
+      })
+     })
+   }
+
+   onTodoChange = evt => {
+     const { value } = evt.target
+      this.setState({ ...this.state, todoNameInput: value })
+   }
    
+
+   onTodoFormSubmit = evt => {
+     evt.preventDefault()
+     this.postNewTodo();
+   }
 
   handleClear = () => {
     this.setState({
@@ -80,7 +86,6 @@ export default class App extends React.Component {
 
 
  handleToggle = (clickedId) => {
-
   this.setState({
     ...this.state, 
     todos: this.state.todos.map(todo => {
@@ -105,7 +110,15 @@ export default class App extends React.Component {
 
         <TodoList handleToggle={this.handleToggle} todos={todos} />
       
-       <Form handleAdd={this.addTodos} />
+        <form onSubmit={this.onTodoFormSubmit}>
+         <input 
+          
+          onChange={this.onTodoChange}
+          value={this.state.todoNameInput} 
+          type='text'
+          />
+         <input type='submit'></input> 
+       </form>
        <button onClick={this.handleClear}>Clear</button>
       </div>
     )
