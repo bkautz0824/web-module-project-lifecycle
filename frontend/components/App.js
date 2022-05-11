@@ -16,61 +16,47 @@ export default class App extends React.Component {
    }
 
 
+   onTodoChange = evt => {
+    const { value } = evt.target
+     this.setState({ ...this.state, todoNameInput: value })
+  }
+
    fetchTodos = () => {
     axios.get(URL)
     .then(res => {
-      
       this.setState({
         ...this.state,
         todos: res.data.data
       })
       
     })
-    .catch(err => {
-      this.setState({
-        ...this.state, error: err.response.data.message
-        })
-      })
+    .catch(this.setErrorMessage)
    }
 
-   componentDidMount() {
-    this.fetchTodos()
+  resetForm = () => {
+    this.setState({
+      ... this.state, todoNameInput: ''})
   }
 
-
-  //  handleAdd = (task) => {
-  //   const newTodo = {
-  //     task: task,
-  //     id: Date.now(),
-  //     completed: false
-  //   }
-  //    this.setState({
-  //      ...this.state,
-  //      todos: [...this.state.todos, newTodo]
-  //    })
-  //  }
-
+  setErrorMessage = (err) => {
+    this.setState({
+      ...this.state, error: err.response.data.message
+      })
+  }
 
    postNewTodo = () => {
      axios.post(URL, {name: this.state.todoNameInput})
      .then(res => {
-        this.fetchAllTodos()
-        this.setState({
-          ... this.state, name: ''
-        })
+        this.fetchTodos()
+        this.resetForm()
      })
-     .catch(err => {
-      this.setState({
-        ...this.state, error: err.response.data.message
-      })
-     })
+     .catch(this.setErrorMessage)
    }
 
-   onTodoChange = evt => {
-     const { value } = evt.target
-      this.setState({ ...this.state, todoNameInput: value })
-   }
-   
+
+   componentDidMount() {
+    this.fetchTodos()
+  }
 
    onTodoFormSubmit = evt => {
      evt.preventDefault()
