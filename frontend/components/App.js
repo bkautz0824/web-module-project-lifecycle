@@ -72,18 +72,24 @@ export default class App extends React.Component {
 
 
  handleToggle = (clickedId) => {
-  this.setState({
-    ...this.state, 
-    todos: this.state.todos.map(todo => {
-      if (todo.id === clickedId){
-        return {
-          ...todo, 
-          completed: !todo.completed
-        }
-      } 
-        return todo;
+   axios.patch(`${URL}/${clickedId}`, )
+   .then(res => {
+     console.log(res)
+    this.setState({
+      ...this.state, 
+      todos: this.state.todos.map(todo => {
+        if (todo.id === clickedId){
+          return {
+            ...todo, 
+            completed: !todo.completed
+          }
+        } 
+          return todo;
+      })
     })
-  })
+   })
+   .catch(this.setErrorMessage)
+  
  }
 
   render() {
